@@ -17,13 +17,15 @@ export function recommendedImpostors(playerCount) {
   return Math.min(recommended, maxImpostors(playerCount));
 }
 
+/** Limita a [1, máximo]; valores que não são inteiros (NaN, undefined, texto) viram 1. */
 export function clampImpostors(count, playerCount) {
-  return Math.min(Math.max(count, 1), maxImpostors(playerCount));
+  const value = Number.isInteger(count) ? count : 1;
+  return Math.min(Math.max(value, 1), maxImpostors(playerCount));
 }
 
 /** Texto para comparação: sem acentos, minúsculo e sem espaços nas pontas. */
 export function normalizeText(text) {
-  return String(text).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  return String(text).normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().trim();
 }
 
 export function defaultName(position) {
@@ -130,8 +132,11 @@ export function pickWord(themes, selectedThemeIds, usedWordIds, rng = Math.rando
   let available = theme.words.filter((entry) => !used.has(wordId(theme.id, entry.word)));
   let nextUsed = [...usedWordIds];
   if (available.length === 0) {
+    // Tema esgotado: recomeça, mas sem repetir em seguida a última palavra sorteada dele.
+    const lastId = usedWordIds.filter((id) => themeWordIds.has(id)).pop();
     nextUsed = nextUsed.filter((id) => !themeWordIds.has(id));
-    available = theme.words;
+    available = theme.words.filter((entry) => wordId(theme.id, entry.word) !== lastId);
+    if (available.length === 0) available = theme.words;
   }
 
   const entry = available[randomInt(available.length, rng)];

@@ -37,6 +37,12 @@ test('clampImpostors limita entre 1 e o máximo', () => {
   assert.equal(clampImpostors(2, 3), 1);
 });
 
+test('clampImpostors trata valores inválidos como 1', () => {
+  for (const invalid of [NaN, undefined, null, 2.5, '2']) {
+    assert.equal(clampImpostors(invalid, 10), 1, String(invalid));
+  }
+});
+
 test('normalizeText ignora acentos, maiúsculas e espaços nas pontas', () => {
   assert.equal(normalizeText('  Ána Júlia '), 'ana julia');
   assert.equal(normalizeText('AÇAÍ'), 'acai');

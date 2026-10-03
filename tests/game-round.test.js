@@ -83,6 +83,14 @@ test('pickWord reinicia só o tema esgotado', () => {
   assert.deepEqual(result.usedWordIds.filter((id) => id.startsWith('frutas/')), [result.wordId]);
 });
 
+test('pickWord, ao reiniciar um tema, não repete a última palavra sorteada', () => {
+  const used = ['frutas/Banana', 'frutas/Uva', 'frutas/Maçã'];
+  for (let seed = 1; seed <= 30; seed += 1) {
+    const result = pickWord(THEMES, ['frutas'], used, seededRng(seed));
+    assert.notEqual(result.entry.word, 'Maçã', `semente ${seed}`);
+  }
+});
+
 test('pickWord não altera os parâmetros recebidos', () => {
   const used = ['frutas/Banana'];
   const selected = ['frutas'];
@@ -144,6 +152,13 @@ test('createRound normaliza os nomes e limita os impostores', () => {
   const { round } = makeRound({ players: [' Ana ', '', 'Caio'], impostorCount: 5 });
   assert.deepEqual(round.players, ['Ana', 'Jogador 2', 'Caio']);
   assert.equal(round.impostors.length, 1);
+});
+
+test('createRound sempre tem pelo menos 1 impostor, mesmo com quantidade inválida', () => {
+  for (const impostorCount of [undefined, NaN, 0]) {
+    const { round } = makeRound({ impostorCount });
+    assert.equal(round.impostors.length, 1, String(impostorCount));
+  }
 });
 
 test('createRound exige pelo menos 3 jogadores', () => {
