@@ -299,3 +299,16 @@ export function saveJSON(key, value)     // try/catch; falha é ignorada (modo p
 1. Criar um repositório no GitHub e enviar a branch `main`.
 2. Em Settings → Pages, escolher "Deploy from a branch", com a branch `main` e a pasta `/ (root)`.
 3. O site fica em `https://<usuário>.github.io/<repositório>/`. Não precisa de build nem de workflow.
+
+## 12. Refinamentos aprovados com o plano de implementação
+
+- **Esconder ao sair do app:** se o app for para segundo plano durante a revelação (tela bloqueada, troca de app), a palavra é escondida e o app volta para a tela "Passe o celular" do mesmo jogador.
+- **Anti toque duplo:** os botões das telas da rodada ignoram toques nos primeiros 600 ms após a tela aparecer. Assim, um toque duplo nunca esconde a palavra antes da leitura nem revela a palavra do próximo jogador.
+- **X:** aparece nas telas 4.2 a 4.4. No Resultado, o botão "Configurações" cumpre esse papel.
+- **Botão "Todos":** o rótulo vira "Limpar" quando todos os temas estão marcados.
+- **Palavra gigante:** o tamanho é calculado pelo maior trecho da palavra (variável CSS `--len`), para nunca quebrar no meio. Nenhum trecho da palavra (separando por espaço ou hífen) passa de 12 caracteres, o que é verificado em teste.
+- **Celular:** `overscroll-behavior-y: none` (sem "puxar para atualizar"). No celular, o rodapé fixo da configuração some enquanto um nome está sendo digitado.
+- **Suporte mínimo:** iOS Safari 15.4+, Chrome/Edge 100+, Firefox 100+. Sem `<dialog>`, as confirmações usam `window.confirm`.
+- **Servidor local:** responde 404 quando as maiúsculas e minúsculas do caminho não batem com o arquivo, como faz o GitHub Pages.
+- **Rede no Windows:** para o celular acessar o servidor, a rede Wi-Fi precisa estar como **Privada**, ou o Node precisa ter permissão no Firewall.
+- **Testes:** ficam em `tests/game-settings.test.js` e `tests/game-round.test.js`, em vez de um único `tests/game.test.js`, além de `tests/storage.test.js` e `tests/static-server.test.js`.
