@@ -1,0 +1,14 @@
+{
+  "name": "impostor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Jogo do Impostor: jogo de festa para jogar passando um celular",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
