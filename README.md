@@ -19,6 +19,8 @@ npm start
 
 Abra o endereço "No PC" que aparece no terminal: `http://localhost:8080`.
 
+> Abrir o `index.html` com dois cliques **não funciona**: o navegador bloqueia módulos JavaScript em arquivos locais. Use sempre o `npm start` (no GitHub Pages isso não é problema).
+
 ## Jogar no celular (mesma rede Wi-Fi)
 
 1. Rode `npm start` no computador.
