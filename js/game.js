@@ -96,3 +96,80 @@ export function sanitizeSettings(raw, allThemeIds) {
     hints: typeof raw.hints === 'boolean' ? raw.hints : true,
   };
 }
+
+/** Inteiro aleatório em [0, max). */
+function randomInt(max, rng) {
+  return Math.min(max - 1, Math.floor(rng() * max));
+}
+
+/** Cópia embaralhada (Fisher–Yates); não altera a lista original. */
+export function shuffle(items, rng = Math.random) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = randomInt(i + 1, rng);
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+export function wordId(themeId, word) {
+  return `${themeId}/${word}`;
+}
+
+/**
+ * Sorteia um tema entre os marcados e uma palavra ainda não usada desse tema.
+ * Quando o tema se esgota, só as palavras dele voltam a ficar disponíveis.
+ */
+export function pickWord(themes, selectedThemeIds, usedWordIds, rng = Math.random) {
+  const selected = themes.filter((theme) => selectedThemeIds.includes(theme.id));
+  if (selected.length === 0) throw new Error('Nenhum tema selecionado');
+
+  const theme = selected[randomInt(selected.length, rng)];
+  const themeWordIds = new Set(theme.words.map((entry) => wordId(theme.id, entry.word)));
+  const used = new Set(usedWordIds);
+  let available = theme.words.filter((entry) => !used.has(wordId(theme.id, entry.word)));
+  let nextUsed = [...usedWordIds];
+  if (available.length === 0) {
+    nextUsed = nextUsed.filter((id) => !themeWordIds.has(id));
+    available = theme.words;
+  }
+
+  const entry = available[randomInt(available.length, rng)];
+  const id = wordId(theme.id, entry.word);
+  nextUsed.push(id);
+  return { theme, entry, wordId: id, usedWordIds: nextUsed };
+}
+
+/** Monta uma rodada: palavra, impostores (com dicas diferentes) e quem começa. */
+export function createRound(
+  { players, impostorCount, themes, selectedThemeIds, hintsEnabled, usedWordIds },
+  rng = Math.random,
+) {
+  const names = normalizePlayers(players);
+  if (names.length < MIN_PLAYERS) throw new Error(`São necessários pelo menos ${MIN_PLAYERS} jogadores`);
+
+  const { theme, entry, usedWordIds: nextUsed } = pickWord(themes, selectedThemeIds, usedWordIds, rng);
+  const count = clampImpostors(impostorCount, names.length);
+  const impostorOrder = shuffle(names.map((_, index) => index), rng).slice(0, count);
+
+  const hints = {};
+  if (hintsEnabled) {
+    const shuffledHints = shuffle(entry.hints, rng);
+    impostorOrder.forEach((playerIndex, i) => {
+      hints[playerIndex] = shuffledHints[i % shuffledHints.length];
+    });
+  }
+
+  return {
+    round: {
+      players: names,
+      themeId: theme.id,
+      themeName: theme.name,
+      word: entry.word,
+      impostors: [...impostorOrder].sort((a, b) => a - b),
+      hints,
+      starter: randomInt(names.length, rng),
+    },
+    usedWordIds: nextUsed,
+  };
+}
