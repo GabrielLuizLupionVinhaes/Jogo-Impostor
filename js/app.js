@@ -278,7 +278,224 @@ setupSection.addEventListener('focusin', updateTyping);
 setupSection.addEventListener('focusout', () => setTimeout(updateTyping, 0));
 window.visualViewport?.addEventListener('resize', updateTyping);
 
-// ---- Rodada (Task 7) ----
+// ---------- Rodada ----------
+
+let historyGuard = false; // há uma entrada extra no histórico para segurar o "voltar"
+let drawTimer = 0;
+
+function startRound() {
+  const { settings } = state;
+  const { round, usedWordIds } = createRound({
+    players: settings.players,
+    impostorCount: settings.impostors,
+    themes: THEMES,
+    selectedThemeIds: settings.themeIds,
+    hintsEnabled: settings.hints,
+    usedWordIds: state.usedWordIds,
+  });
+  cancelDraw();
+  clearReveal();
+  clearResult();
+  state.round = round;
+  state.usedWordIds = usedWordIds;
+  state.current = 0;
+  saveJSON(USED_WORDS_KEY, usedWordIds);
+  for (const element of $$('[data-theme-name]')) element.textContent = round.themeName;
+  showPass();
+}
+
+function showPass() {
+  const { round, current } = state;
+  for (const element of $$('[data-progress]')) element.textContent = `${current + 1} / ${round.players.length}`;
+  setBigText($('#pass-name'), round.players[current]);
+  showScreen('pass');
+}
+
+function showReveal() {
+  const { round, current } = state;
+  const isImpostor = round.impostors.includes(current);
+  // Preenche e mostra no mesmo passo: nunca aparece o conteúdo do jogador anterior.
+  if (isImpostor) {
+    const hint = round.hints[current];
+    $('#impostor-hint').textContent = hint ?? '';
+    $('#impostor-hint-box').hidden = !hint;
+  } else {
+    setBigText($('#reveal-word'), round.word);
+  }
+  $('#reveal-crew').hidden = isImpostor;
+  $('#reveal-impostor').hidden = !isImpostor;
+  $('#hide-btn').textContent = current === round.players.length - 1 ? 'Esconder e continuar' : 'Esconder e passar';
+  showScreen('reveal');
+}
+
+/** Apaga o segredo da tela de revelação. */
+function clearReveal() {
+  $('#reveal-crew').hidden = true;
+  $('#reveal-impostor').hidden = true;
+  $('#reveal-word').textContent = '';
+  $('#impostor-hint').textContent = '';
+}
+
+function clearResult() {
+  $('#result-impostors').replaceChildren();
+  $('#result-word').textContent = '';
+}
+
+function hideAndPass() {
+  clearReveal();
+  if (state.current < state.round.players.length - 1) {
+    state.current += 1;
+    showPass();
+  } else {
+    showStarter();
+  }
+}
+
+function cancelDraw() {
+  clearTimeout(drawTimer);
+  drawTimer = 0;
+}
+
+/** Sorteio animado de quem começa (o resultado já veio pronto em round.starter). */
+function showStarter() {
+  const { round } = state;
+  const nameElement = $('#starter-name');
+  const revealButton = $('#open-reveal-confirm');
+  $('#starter-label').hidden = true;
+  $('#starter-announcement').textContent = '';
+  nameElement.classList.remove('is-final');
+  revealButton.disabled = true;
+  showScreen('starter');
+
+  const finish = () => {
+    if (state.round !== round) return;
+    drawTimer = 0;
+    const name = round.players[round.starter];
+    setBigText(nameElement, name);
+    nameElement.classList.remove('is-drawing');
+    nameElement.classList.add('is-final');
+    $('#starter-label').hidden = false;
+    $('#starter-announcement').textContent = `${name} começa!`;
+    revealButton.disabled = false;
+  };
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    drawTimer = setTimeout(finish, 50); // um instante depois, para o leitor de tela anunciar
+    return;
+  }
+
+  nameElement.classList.add('is-drawing');
+  let index = Math.floor(Math.random() * round.players.length);
+  let delay = 60;
+  let elapsed = 0;
+  const step = () => {
+    if (state.round !== round) return; // saíram ou começaram outra rodada
+    if (elapsed >= 2400) {
+      finish();
+      return;
+    }
+    index = (index + 1) % round.players.length;
+    setBigText(nameElement, round.players[index]);
+    elapsed += delay;
+    delay = Math.min(delay * 1.15, 380);
+    drawTimer = setTimeout(step, delay);
+  };
+  step();
+}
+
+function showResult() {
+  cancelDraw();
+  const { round } = state;
+  $('#result-impostor-label').textContent = round.impostors.length > 1 ? 'Os impostores eram' : 'O impostor era';
+  $('#result-impostors').replaceChildren(
+    ...round.impostors.map((index) => {
+      const item = document.createElement('li');
+      const name = document.createElement('strong');
+      name.textContent = round.players[index];
+      item.append(name);
+      if (round.hints[index]) {
+        const hint = document.createElement('span');
+        hint.className = 'impostor-hint';
+        hint.textContent = `dica: ${round.hints[index]}`;
+        item.append(hint);
+      }
+      return item;
+    }),
+  );
+  setBigText($('#result-word'), round.word);
+  showScreen('result');
+}
+
+function enterRound() {
+  if (!historyGuard) {
+    history.pushState({ impostorRound: true }, ''); // sempre dentro de um toque (ativação do usuário)
+    historyGuard = true;
+  }
+  startRound();
+}
+
+function leaveRound() {
+  cancelDraw();
+  clearReveal();
+  clearResult();
+  state.round = null;
+  renderSetup();
+  showScreen('setup'); // troca a tela antes do history.back(): o popstate dele é ignorado
+  if (historyGuard) {
+    historyGuard = false;
+    history.back();
+  }
+}
+
+function confirmExit() {
+  openDialog($('#exit-dialog'), leaveRound);
+}
+
+// "Voltar" do celular/navegador durante a rodada: pergunta antes de sair.
+window.addEventListener('popstate', () => {
+  if (state.screen === 'setup' || !historyGuard) return;
+  historyGuard = false;
+  if (state.screen === 'result') {
+    leaveRound(); // rodada já terminou: nada a perder
+    return;
+  }
+  history.pushState({ impostorRound: true }, '');
+  historyGuard = true;
+  confirmExit();
+});
+
+// Celular bloqueado ou troca de app com a palavra aberta: esconde e volta para "Passe o celular".
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden' && state.screen === 'reveal') {
+    clearReveal();
+    showPass();
+  }
+});
+
+$('#start-game').addEventListener('click', () => {
+  if (tooSoon() || setupErrors().length > 0) return;
+  enterRound();
+});
+
+$('#reveal-btn').addEventListener('click', () => {
+  if (!tooSoon()) showReveal();
+});
+
+$('#hide-btn').addEventListener('click', () => {
+  if (!tooSoon()) hideAndPass();
+});
+
+$('#open-reveal-confirm').addEventListener('click', () => {
+  if (!tooSoon()) openDialog($('#reveal-dialog'), showResult);
+});
+
+$('#new-round').addEventListener('click', () => {
+  if (!tooSoon()) startRound();
+});
+
+$('#back-to-setup').addEventListener('click', leaveRound);
+
+for (const button of $$('[data-exit]')) button.addEventListener('click', confirmExit);
 
 // ---------- Início ----------
 renderSetup();
