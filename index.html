@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f0a1a">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Jogo do Impostor: todos recebem a mesma palavra secreta, menos o impostor. Jogue com os amigos passando um celular.">
+  <title>Impostor</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <main class="app">
+    <!-- 1. Configuração -->
+    <section class="screen screen-setup" data-screen="setup">
+      <header class="brand">
+        <div>
+          <h1 class="brand-title">Impostor</h1>
+          <p class="brand-subtitle">Quem não sabe a palavra?</p>
+        </div>
+        <button type="button" class="btn-link" id="open-rules">Como jogar</button>
+      </header>
+
+      <section class="card" aria-labelledby="players-title">
+        <div class="card-header">
+          <h2 id="players-title">Jogadores</h2>
+          <span class="badge" id="player-count"></span>
+        </div>
+        <ol class="player-list" id="player-list"></ol>
+        <button type="button" class="btn btn-ghost btn-small" id="add-player">+ Adicionar jogador</button>
+      </section>
+
+      <section class="card" aria-labelledby="impostors-title">
+        <div class="card-header">
+          <h2 id="impostors-title">Impostores</h2>
+        </div>
+        <div class="stepper">
+          <button type="button" class="stepper-btn" id="impostors-minus" aria-label="Menos impostores">−</button>
+          <output class="stepper-value" id="impostors-value" aria-live="polite"></output>
+          <button type="button" class="stepper-btn" id="impostors-plus" aria-label="Mais impostores">+</button>
+        </div>
+        <p class="muted center-text" id="impostors-hint"></p>
+      </section>
+
+      <section class="card" aria-labelledby="themes-title">
+        <div class="card-header">
+          <h2 id="themes-title">Temas</h2>
+          <button type="button" class="btn-link" id="toggle-all-themes">Todos</button>
+        </div>
+        <div id="theme-groups"></div>
+      </section>
+
+      <section class="card">
+        <label class="switch-row" for="hints-toggle">
+          <span>
+            <span class="switch-title">Dica para o impostor</span>
+            <span class="muted">O impostor recebe uma palavra relacionada para ajudar a disfarçar.</span>
+          </span>
+          <input type="checkbox" class="switch-input" id="hints-toggle" checked>
+          <span class="switch-track" aria-hidden="true"></span>
+        </label>
+      </section>
+
+      <footer class="actions actions-sticky">
+        <p class="form-error" id="setup-error" role="alert" hidden></p>
+        <button type="button" class="btn btn-primary" id="start-game">Começar</button>
+      </footer>
+    </section>
+
+    <!-- 2. Passe o celular -->
+    <section class="screen screen-game" data-screen="pass" hidden>
+      <header class="topbar">
+        <span class="progress" data-progress></span>
+        <button type="button" class="icon-btn" data-exit aria-label="Sair da rodada">✕</button>
+      </header>
+      <div class="stage">
+        <p class="eyebrow">Passe o celular para</p>
+        <p class="big-name" id="pass-name"></p>
+        <p class="muted">Só você pode ver! Toque em <strong>Revelar</strong> quando estiver com o celular.</p>
+      </div>
+      <footer class="actions">
+        <button type="button" class="btn btn-primary" id="reveal-btn">Revelar</button>
+      </footer>
+    </section>
+
+    <!-- 3. Revelação -->
+    <section class="screen screen-game" data-screen="reveal" hidden>
+      <header class="topbar">
+        <span class="progress" data-progress></span>
+        <button type="button" class="icon-btn" data-exit aria-label="Sair da rodada">✕</button>
+      </header>
+      <div class="stage" id="reveal-crew" hidden>
+        <p class="theme-label">Tema: <strong data-theme-name></strong></p>
+        <p class="eyebrow">Sua palavra é</p>
+        <p class="big-word word-color" id="reveal-word"></p>
+      </div>
+      <div class="stage" id="reveal-impostor" hidden>
+        <p class="eyebrow">Você é o</p>
+        <p class="big-word impostor-color" style="--len: 8">Impostor</p>
+        <p class="theme-label">Tema: <strong data-theme-name></strong></p>
+        <div class="hint-box" id="impostor-hint-box">
+          <p>Sua dica: <strong id="impostor-hint"></strong></p>
+          <p class="muted">Use a dica para se disfarçar.</p>
+        </div>
+      </div>
+      <footer class="actions">
+        <button type="button" class="btn btn-primary" id="hide-btn">Esconder e passar</button>
+      </footer>
+    </section>
+
+    <!-- 4. Quem começa -->
+    <section class="screen screen-game" data-screen="starter" hidden>
+      <header class="topbar">
+        <span class="progress">Todos já viram!</span>
+        <button type="button" class="icon-btn" data-exit aria-label="Sair da rodada">✕</button>
+      </header>
+      <div class="stage">
+        <p class="eyebrow">Quem começa?</p>
+        <p class="big-name" id="starter-name" aria-hidden="true"></p>
+        <p class="starter-label" id="starter-label" aria-hidden="true">começa!</p>
+        <p class="sr-only" id="starter-announcement" aria-live="polite"></p>
+        <ul class="rules-reminder">
+          <li>Cada um fala <strong>1 palavra</strong> sobre a palavra secreta, em sentido horário.</li>
+          <li>Deem 1 ou 2 voltas, depois discutam e votem em quem é o impostor.</li>
+        </ul>
+      </div>
+      <footer class="actions">
+        <button type="button" class="btn btn-danger" id="open-reveal-confirm">Revelar impostor</button>
+      </footer>
+    </section>
+
+    <!-- 5. Resultado -->
+    <section class="screen screen-game" data-screen="result" hidden>
+      <div class="stage">
+        <p class="eyebrow" id="result-impostor-label">O impostor era</p>
+        <ul class="impostor-names" id="result-impostors"></ul>
+        <p class="eyebrow">A palavra era</p>
+        <p class="big-word word-color" id="result-word"></p>
+        <p class="theme-label">Tema: <strong data-theme-name></strong></p>
+      </div>
+      <footer class="actions">
+        <button type="button" class="btn btn-primary" id="new-round">Nova rodada</button>
+        <button type="button" class="btn btn-ghost" id="back-to-setup">Configurações</button>
+      </footer>
+    </section>
+  </main>
+
+  <dialog class="dialog" id="rules-dialog" aria-labelledby="rules-title"
+    data-fallback="Cada um vê a palavra em segredo; o impostor só recebe uma dica. Cada um fala 1 palavra e, no fim, todos votam em quem é o impostor.">
+    <form method="dialog">
+      <h2 id="rules-title">Como jogar</h2>
+      <ol class="rules-list">
+        <li>Escolha os jogadores, os temas e quantos impostores.</li>
+        <li>Passe o celular: cada um toca em <strong>Revelar</strong> e vê a palavra secreta em segredo. O impostor não sabe a palavra, mas pode receber uma <strong>dica</strong>.</li>
+        <li>O jogador sorteado começa: cada um fala <strong>1 palavra</strong> ligada à palavra secreta, em sentido horário.</li>
+        <li>Depois de 1 ou 2 voltas, discutam e votem em quem é o impostor.</li>
+        <li>Revelem! Se o grupo acertar, os jogadores vencem. Se o impostor escapar, ou adivinhar a palavra, ele vence.</li>
+      </ol>
+      <div class="dialog-actions dialog-actions-single">
+        <button class="btn btn-primary" value="confirm">Entendi</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dialog" id="reveal-dialog" aria-labelledby="reveal-dialog-title"
+    data-fallback="Todos já votaram? Isso mostra quem era o impostor e a palavra.">
+    <form method="dialog">
+      <h2 id="reveal-dialog-title">Revelar o impostor?</h2>
+      <p class="muted">Todos já votaram? Isso mostra quem era o impostor e a palavra.</p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" value="cancel">Cancelar</button>
+        <button class="btn btn-danger" value="confirm">Revelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dialog" id="exit-dialog" aria-labelledby="exit-dialog-title"
+    data-fallback="Sair da rodada? A rodada atual será perdida.">
+    <form method="dialog">
+      <h2 id="exit-dialog-title">Sair da rodada?</h2>
+      <p class="muted">A rodada atual será perdida.</p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" value="cancel">Continuar jogando</button>
+        <button class="btn btn-danger" value="confirm">Sair</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
