@@ -68,11 +68,17 @@ function setBigText(element, text) {
 
 /**
  * Abre um diálogo e chama onConfirm se a pessoa tocar no botão value="confirm".
- * Sem suporte a <dialog> (iOS < 15.4), usa window.confirm com o texto de data-fallback.
+ * Sem suporte a <dialog> (iOS < 15.4), usa o texto de data-fallback: window.confirm quando
+ * o diálogo é uma pergunta (tem "Cancelar") e window.alert quando é só informação.
  */
 function openDialog(dialog, onConfirm = () => {}) {
   if (typeof dialog.showModal !== 'function') {
-    if (window.confirm(dialog.dataset.fallback)) onConfirm();
+    if (!dialog.querySelector('[value="cancel"]')) {
+      window.alert(dialog.dataset.fallback);
+      onConfirm();
+    } else if (window.confirm(dialog.dataset.fallback)) {
+      onConfirm();
+    }
     return;
   }
   if (dialog.open) return;
@@ -168,7 +174,7 @@ function buildThemeChips() {
 }
 
 function renderThemes() {
-  if (!$('#theme-groups').hasChildNodes()) buildThemeChips();
+  if (!$('.chip')) buildThemeChips();
   const selected = new Set(state.settings.themeIds);
   for (const chip of $$('.chip')) chip.setAttribute('aria-pressed', String(selected.has(chip.dataset.themeId)));
   $('#toggle-all-themes').textContent = selected.size === ALL_THEME_IDS.length ? 'Limpar' : 'Todos';
@@ -363,6 +369,7 @@ function showStarter() {
   const revealButton = $('#open-reveal-confirm');
   $('#starter-label').hidden = true;
   $('#starter-announcement').textContent = '';
+  nameElement.textContent = ''; // nunca mostrar, nem por um instante, quem começou a rodada anterior
   nameElement.classList.remove('is-final');
   revealButton.disabled = true;
   showScreen('starter');
@@ -384,26 +391,33 @@ function showStarter() {
     return;
   }
 
+  // Intervalos cada vez maiores (~2,4 s no total). O ponto de partida é calculado para que
+  // o último nome da animação seja exatamente quem começa: a roleta "para" nele.
+  const delays = [];
+  for (let delay = 60, elapsed = 0; elapsed < 2400; elapsed += delay, delay = Math.min(delay * 1.15, 380)) {
+    delays.push(delay);
+  }
+  const count = round.players.length;
+  let index = (((round.starter - delays.length) % count) + count) % count;
+  let stepNumber = 0;
+
   nameElement.classList.add('is-drawing');
-  let index = Math.floor(Math.random() * round.players.length);
-  let delay = 60;
-  let elapsed = 0;
   const step = () => {
     if (state.round !== round) return; // saíram ou começaram outra rodada
-    if (elapsed >= 2400) {
+    if (stepNumber === delays.length) {
       finish();
       return;
     }
-    index = (index + 1) % round.players.length;
+    index = (index + 1) % count;
     setBigText(nameElement, round.players[index]);
-    elapsed += delay;
-    delay = Math.min(delay * 1.15, 380);
-    drawTimer = setTimeout(step, delay);
+    drawTimer = setTimeout(step, delays[stepNumber]);
+    stepNumber += 1;
   };
   step();
 }
 
 function showResult() {
+  if (!state.round) return; // a rodada já foi encerrada
   cancelDraw();
   const { round } = state;
   $('#result-impostor-label').textContent = round.impostors.length > 1 ? 'Os impostores eram' : 'O impostor era';
@@ -435,6 +449,7 @@ function enterRound() {
 }
 
 function leaveRound() {
+  for (const dialog of $$('dialog[open]')) dialog.close(); // sem returnValue: nada é confirmado
   cancelDraw();
   clearReveal();
   clearResult();
@@ -451,7 +466,7 @@ function confirmExit() {
   openDialog($('#exit-dialog'), leaveRound);
 }
 
-// "Voltar" do celular/navegador durante a rodada: pergunta antes de sair.
+// "Voltar" do celular/navegador durante a rodada: fecha o diálogo aberto ou pergunta antes de sair.
 window.addEventListener('popstate', () => {
   if (state.screen === 'setup' || !historyGuard) return;
   historyGuard = false;
@@ -459,8 +474,18 @@ window.addEventListener('popstate', () => {
     leaveRound(); // rodada já terminou: nada a perder
     return;
   }
+  // Esconde o segredo antes de mexer no histórico (prévias do gesto de voltar usam capturas da tela).
+  if (state.screen === 'reveal') {
+    clearReveal();
+    showPass();
+  }
   history.pushState({ impostorRound: true }, '');
   historyGuard = true;
+  const openDialogs = $$('dialog[open]');
+  if (openDialogs.length > 0) {
+    for (const dialog of openDialogs) dialog.close(); // como no Android: "voltar" só fecha o diálogo
+    return;
+  }
   confirmExit();
 });
 
@@ -498,5 +523,7 @@ $('#back-to-setup').addEventListener('click', leaveRound);
 for (const button of $$('[data-exit]')) button.addEventListener('click', confirmExit);
 
 // ---------- Início ----------
+// Recarregou no meio de uma rodada: descarta a entrada extra do histórico.
+if (history.state?.impostorRound) history.back();
 renderSetup();
 showScreen('setup');
