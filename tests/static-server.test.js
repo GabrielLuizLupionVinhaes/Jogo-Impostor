@@ -1,5 +1,6 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { request } from 'node:http';
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -13,6 +14,8 @@ before(async () => {
   base = await mkdtemp(join(tmpdir(), 'impostor-server-'));
   const root = join(base, 'site');
   await mkdir(join(root, 'js'), { recursive: true });
+  await mkdir(join(root, '.git'), { recursive: true });
+  await writeFile(join(root, '.git', 'config'), '[core]');
   await writeFile(join(root, 'index.html'), '<!doctype html><title>Início</title>');
   await writeFile(join(root, 'js', 'app.js'), 'export {};');
   await writeFile(join(root, 'favicon.svg'), '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
@@ -57,11 +60,27 @@ test('responde 404 quando maiúsculas e minúsculas não batem (igual ao GitHub 
   assert.equal((await fetch(url('/JS/app.js'))).status, 404);
 });
 
+/** Requisição com o caminho exatamente como escrito (o fetch normalizaria "/../"). */
+function rawStatus(path) {
+  return new Promise((resolve, reject) => {
+    const req = request({ host: '127.0.0.1', port: server.address().port, path }, (response) => {
+      response.resume();
+      resolve(response.statusCode);
+    });
+    req.on('error', reject);
+    req.end();
+  });
+}
+
 test('nunca entrega arquivos fora da raiz', async () => {
-  for (const path of ['/..%2fsegredo.txt', '/..%5csegredo.txt', '/%2e%2e/segredo.txt']) {
-    const response = await fetch(url(path));
-    assert.notEqual(response.status, 200, path);
+  for (const path of ['/../segredo.txt', '/..%2fsegredo.txt', '/..%5csegredo.txt', '/js/..%2f..%2fsegredo.txt']) {
+    assert.ok([403, 404].includes(await rawStatus(path)), path);
   }
+});
+
+test('não entrega arquivos ocultos como .git (o GitHub Pages também não)', async () => {
+  assert.equal(await rawStatus('/.git/config'), 404);
+  assert.equal(await rawStatus('/js/.oculto'), 404);
 });
 
 test('responde 400 para endereço malformado e continua funcionando', async () => {

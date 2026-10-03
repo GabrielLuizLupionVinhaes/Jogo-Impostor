@@ -40,6 +40,12 @@ async function handle(root, request, response) {
     return;
   }
 
+  // Arquivos e pastas ocultos (.git, .env…) nunca saem na rede; o GitHub Pages também não os serve.
+  if (pathname.split(/[/\\]/).some((segment) => segment.startsWith('.'))) {
+    send(response, 404, 'Arquivo não encontrado');
+    return;
+  }
+
   let filePath = resolve(root, `.${pathname}`);
   if (filePath !== root && !filePath.startsWith(root + sep)) {
     send(response, 403, 'Acesso negado');
