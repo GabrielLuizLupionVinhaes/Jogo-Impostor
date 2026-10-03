@@ -78,6 +78,20 @@ test('nenhuma dica entrega a palavra', () => {
   }
 });
 
+test('toda palavra tem ao menos 1 dica que também serve para outra palavra do mesmo tema', () => {
+  // Uma dica exclusiva entrega a palavra; dicas compartilhadas mantêm o impostor na dúvida.
+  for (const theme of THEMES) {
+    const uses = new Map();
+    for (const { hints } of theme.words) {
+      for (const hint of hints) uses.set(normalizeText(hint), (uses.get(normalizeText(hint)) ?? 0) + 1);
+    }
+    for (const { word, hints } of theme.words) {
+      const shared = hints.filter((hint) => uses.get(normalizeText(hint)) > 1);
+      assert.ok(shared.length >= 1, `${theme.id}/${word}: nenhuma dica é compartilhada (${hints.join(', ')})`);
+    }
+  }
+});
+
 test(`nenhum trecho de palavra passa de ${MAX_TOKEN_LENGTH} caracteres (cabe na tela)`, () => {
   for (const theme of THEMES) {
     for (const { word } of theme.words) {

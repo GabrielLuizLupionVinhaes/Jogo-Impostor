@@ -1,6 +1,7 @@
 // Banco de palavras do Jogo do Impostor.
 // Formato de cada linha: "Palavra: dica, dica, dica".
-// As dicas ajudam o impostor a se disfarçar sem entregar a palavra.
+// As dicas ajudam o impostor a se disfarçar sem entregar a palavra: cada dica deve servir
+// para mais de uma palavra do mesmo tema (nada de nomes próprios, bordões ou apelidos únicos).
 // Depois de editar, rode `npm test` para conferir as regras do banco.
 
 /** Converte o texto "Palavra: dica, dica, dica" (uma por linha) em [{ word, hints }]. */
@@ -36,136 +37,136 @@ export const PACKS = [
         Pizza: Queijo, Forno, Fatia
         Hambúrguer: Lanche, Carne, Pão
         Lasanha: Massa, Forno, Camadas
-        Sushi: Arroz, Peixe, Hashi
-        Feijoada: Sábado, Panela, Couve
-        Brigadeiro: Festa, Chocolate, Granulado
-        Pão de queijo: Mineiro, Café, Polvilho
+        Sushi: Arroz, Delivery, Frio
+        Feijoada: Arroz, Panela, Almoço
+        Brigadeiro: Aniversário, Chocolate, Granulado
+        Pão de queijo: Café, Polvilho, Forno
         Coxinha: Salgado, Frango, Lanchonete
-        Açaí: Tigela, Roxo, Granola
+        Açaí: Tigela, Gelado, Fruta
         Pastel: Feira, Fritura, Recheio
-        Sorvete: Gelado, Casquinha, Verão
-        Pipoca: Cinema, Milho, Sal
-        Churrasco: Carvão, Domingo, Picanha
+        Sorvete: Gelado, Sobremesa, Verão
+        Pipoca: Petisco, Milho, Sal
+        Churrasco: Domingo, Carne, Amigos
         Macarrão: Massa, Molho, Italiano
         Omelete: Ovo, Frigideira, Queijo
-        Salada: Alface, Verde, Dieta
-        Bolo: Aniversário, Vela, Cobertura
-        Chocolate: Doce, Cacau, Páscoa
-        Batata frita: Palito, Ketchup, Fritura
-        Panqueca: Massa, Enrolada, Recheio
-        Tapioca: Goma, Nordeste, Recheio
-        Cuscuz: Milho, Nordeste, Vapor
-        Strogonoff: Champignon, Palha, Arroz
-        Pudim: Calda, Sobremesa, Caramelo
-        Cachorro-quente: Salsicha, Lanche, Mostarda
+        Salada: Alface, Verde, Almoço
+        Bolo: Aniversário, Fatia, Cobertura
+        Chocolate: Doce, Sobremesa, Presente
+        Batata frita: Porção, Ketchup, Fritura
+        Panqueca: Massa, Frigideira, Recheio
+        Tapioca: Frigideira, Nordeste, Recheio
+        Cuscuz: Milho, Nordeste, Café
+        Strogonoff: Arroz, Molho, Frango
+        Pudim: Calda, Sobremesa, Doce
+        Cachorro-quente: Pão, Lanche, Mostarda
       `),
       theme('animais', 'Animais', `
-        Cachorro: Latido, Coleira, Osso
-        Gato: Miau, Bigode, Novelo
-        Leão: Juba, Selva, Rei
-        Elefante: Tromba, Grande, Marfim
-        Girafa: Pescoço, Alta, Manchas
-        Macaco: Banana, Galho, Cipó
-        Zebra: Listras, Savana, Manada
+        Cachorro: Coleira, Estimação, Pelo
+        Gato: Bigode, Estimação, Pelo
+        Leão: Selva, Savana, Felino
+        Elefante: Grande, Savana, Circo
+        Girafa: Savana, Manchas, Folhas
+        Macaco: Galho, Selva, Pular
+        Zebra: Savana, Manada, Preto
         Tubarão: Mar, Dentes, Barbatana
         Golfinho: Mar, Inteligente, Salto
-        Pinguim: Gelo, Smoking, Antártida
-        Coruja: Noite, Olhos, Penas
-        Cobra: Veneno, Rastejar, Escamas
-        Jacaré: Pântano, Dentes, Rio
-        Tartaruga: Casco, Lenta, Ovos
-        Cavalo: Galope, Crina, Ferradura
-        Vaca: Leite, Fazenda, Mugido
+        Pinguim: Gelo, Ave, Nadar
+        Coruja: Noite, Penas, Ave
+        Cobra: Veneno, Escamas, Selva
+        Jacaré: Dentes, Rio, Escamas
+        Tartaruga: Casco, Ovos, Mar
+        Cavalo: Fazenda, Casco, Manada
+        Vaca: Fazenda, Manchas, Pasto
         Galinha: Ovo, Fazenda, Pena
-        Porco: Lama, Fazenda, Rosa
-        Coelho: Cenoura, Orelhas, Páscoa
-        Borboleta: Asas, Casulo, Colorida
-        Abelha: Mel, Ferrão, Colmeia
-        Papagaio: Fala, Verde, Bico
-        Urso: Hibernar, Mel, Garras
-        Canguru: Bolsa, Austrália, Pulo
-        Polvo: Tentáculos, Tinta, Mar
+        Porco: Fazenda, Rosa, Gordinho
+        Coelho: Orelhas, Pular, Estimação
+        Borboleta: Asas, Colorida, Jardim
+        Abelha: Mel, Jardim, Voar
+        Papagaio: Penas, Verde, Bico
+        Urso: Floresta, Mel, Garras
+        Canguru: Pular, Filhote, Rabo
+        Polvo: Mar, Inteligente, Braços
       `),
       theme('objetos', 'Objetos', `
-        Celular: Tela, Bateria, Mensagem
-        Guarda-chuva: Tempestade, Cabo, Molhado
-        Relógio: Hora, Ponteiro, Pulso
-        Óculos: Lente, Visão, Armação
-        Tesoura: Cortar, Papel, Lâmina
-        Escova de dente: Pasta, Banheiro, Sorriso
-        Travesseiro: Cama, Fronha, Dormir
-        Chave: Porta, Fechadura, Abrir
-        Espelho: Reflexo, Vidro, Vaidade
-        Vela: Fogo, Cera, Aniversário
-        Geladeira: Cozinha, Frio, Ímã
+        Celular: Tela, Bateria, Bolso
+        Guarda-chuva: Cabo, Abrir, Dobrar
+        Relógio: Pulso, Bateria, Parede
+        Óculos: Lente, Vidro, Sol
+        Tesoura: Cortar, Papel, Escola
+        Escova de dente: Banheiro, Cabo, Manhã
+        Travesseiro: Cama, Dormir, Macio
+        Chave: Porta, Abrir, Bolso
+        Espelho: Vidro, Banheiro, Parede
+        Vela: Fogo, Aniversário, Luz
+        Geladeira: Cozinha, Frio, Porta
         Televisão: Controle, Canal, Sofá
-        Mochila: Escola, Costas, Zíper
-        Lápis: Escrever, Borracha, Ponta
+        Mochila: Escola, Costas, Viagem
+        Lápis: Borracha, Ponta, Escola
         Garrafa: Tampa, Água, Vidro
         Cadeira: Sentar, Pernas, Mesa
-        Bicicleta: Pedal, Roda, Corrente
-        Chinelo: Praia, Dedo, Verão
-        Martelo: Prego, Bater, Ferramenta
+        Bicicleta: Passeio, Rua, Equilíbrio
+        Chinelo: Praia, Borracha, Verão
+        Martelo: Bater, Ferramenta, Cabo
         Lanterna: Luz, Escuro, Pilha
-        Almofada: Sofá, Macia, Enfeite
-        Panela: Fogão, Tampa, Cozinhar
+        Almofada: Sofá, Macio, Sentar
+        Panela: Cozinha, Tampa, Cabo
         Controle remoto: Botões, Pilha, Canal
-        Escada: Degrau, Subir, Andar
-        Balão: Festa, Ar, Estourar
+        Escada: Subir, Alto, Equilíbrio
+        Balão: Festa, Aniversário, Colorido
       `),
       theme('lugares', 'Lugares', `
-        Praia: Areia, Sol, Mar
-        Escola: Professor, Recreio, Sala
-        Hospital: Médico, Maca, Emergência
-        Cinema: Tela, Filme, Ingresso
-        Shopping: Lojas, Escada rolante, Compras
-        Aeroporto: Avião, Mala, Portão
-        Igreja: Missa, Altar, Sino
+        Praia: Sol, Areia, Férias
+        Escola: Sala, Uniforme, Crianças
+        Hospital: Remédio, Fila, Branco
+        Cinema: Ingresso, Escuro, Pipoca
+        Shopping: Passeio, Escada rolante, Compras
+        Aeroporto: Mala, Portão, Viagem
+        Igreja: Silêncio, Domingo, Casamento
         Supermercado: Carrinho, Caixa, Prateleira
-        Academia: Peso, Suor, Esteira
+        Academia: Peso, Suor, Esporte
         Biblioteca: Livros, Silêncio, Estante
-        Restaurante: Garçom, Cardápio, Mesa
+        Restaurante: Garçom, Cardápio, Fila
         Zoológico: Jaula, Bichos, Passeio
-        Parque de diversões: Montanha-russa, Ingresso, Algodão-doce
+        Parque de diversões: Ingresso, Algodão-doce, Fila
         Padaria: Pão, Café, Balcão
         Farmácia: Remédio, Receita, Balcão
-        Banco: Dinheiro, Fila, Cofre
-        Estádio: Torcida, Arquibancada, Jogo
-        Museu: Quadro, Arte, Exposição
-        Fazenda: Trator, Galinheiro, Plantação
-        Delegacia: Polícia, Cela, Boletim
-        Hotel: Quarto, Recepção, Hóspede
-        Piscina: Água, Nadar, Cloro
-        Cemitério: Túmulo, Flores, Silêncio
-        Montanha: Pico, Neve, Escalar
-        Circo: Palhaço, Lona, Picadeiro
+        Banco: Dinheiro, Fila, Caixa
+        Estádio: Arquibancada, Esporte, Barulho
+        Museu: Quadro, Arte, Silêncio
+        Fazenda: Bichos, Campo, Portão
+        Delegacia: Boletim, Uniforme, Grade
+        Hotel: Quarto, Recepção, Férias
+        Piscina: Água, Nadar, Sol
+        Cemitério: Flores, Silêncio, Velas
+        Montanha: Trilha, Neve, Férias
+        Circo: Plateia, Crianças, Lona
       `),
       theme('profissoes', 'Profissões', `
-        Médico: Jaleco, Consulta, Receita
-        Professor: Aula, Quadro, Prova
+        Médico: Jaleco, Consultório, Plantão
+        Professor: Quadro, Prova, Paciência
         Bombeiro: Fogo, Mangueira, Resgate
-        Policial: Viatura, Distintivo, Sirene
-        Cozinheiro: Avental, Fogão, Tempero
-        Dentista: Sorriso, Broca, Cárie
-        Piloto: Avião, Cabine, Voo
-        Advogado: Tribunal, Processo, Terno
-        Cabeleireiro: Salão, Corte, Secador
-        Motorista: Volante, Ônibus, Estrada
-        Pedreiro: Tijolo, Cimento, Obra
-        Garçom: Bandeja, Gorjeta, Mesa
+        Policial: Uniforme, Sirene, Rua
+        Cozinheiro: Avental, Fogo, Receita
+        Dentista: Sorriso, Broca, Consultório
+        Piloto: Cabine, Passageiros, Céu
+        Advogado: Tribunal, Processo, Escritório
+        Cabeleireiro: Corte, Tesoura, Avental
+        Motorista: Volante, Estrada, Passageiros
+        Pedreiro: Obra, Capacete, Parede
+        Garçom: Bandeja, Gorjeta, Uniforme
         Veterinário: Bichos, Vacina, Clínica
-        Astronauta: Espaço, Foguete, Lua
-        Jornalista: Notícia, Microfone, Reportagem
+        Astronauta: Capacete, Céu, Ciência
+        Jornalista: Microfone, Câmera, Televisão
         Fotógrafo: Câmera, Flash, Retrato
-        Carteiro: Correio, Encomenda, Endereço
-        Mecânico: Oficina, Graxa, Motor
-        Enfermeiro: Plantão, Injeção, Curativo
-        Programador: Computador, Código, Café
-        Agricultor: Plantação, Trator, Colheita
-        Pintor: Pincel, Tinta, Parede
-        Eletricista: Fios, Choque, Tomada
-        Salva-vidas: Apito, Boia, Resgate
-        Juiz: Tribunal, Sentença, Toga
+        Carteiro: Rua, Entrega, Uniforme
+        Mecânico: Oficina, Ferramentas, Motor
+        Enfermeiro: Plantão, Vacina, Curativo
+        Programador: Computador, Café, Escritório
+        Agricultor: Campo, Sol, Bichos
+        Pintor: Quadro, Parede, Arte
+        Eletricista: Escada, Ferramentas, Luz
+        Salva-vidas: Apito, Resgate, Sol
+        Juiz: Tribunal, Martelo, Processo
       `),
     ],
   },
@@ -174,111 +175,111 @@ export const PACKS = [
     name: 'Cultura pop',
     themes: [
       theme('filmes-series', 'Filmes e Séries', `
-        Titanic: Navio, Iceberg, Naufrágio
-        Harry Potter: Bruxo, Varinha, Cicatriz
-        Star Wars: Galáxia, Sabre, Nave
-        Toy Story: Brinquedos, Cowboy, Pixar
-        Frozen: Gelo, Princesa, Neve
-        O Rei Leão: Savana, Juba, Hakuna Matata
-        Vingadores: Heróis, Marvel, Escudo
-        Jurassic Park: Dinossauros, Ilha, Parque
-        Matrix: Pílula, Hacker, Simulação
-        Stranger Things: Anos 80, Monstro, Poderes
-        La Casa de Papel: Assalto, Máscara, Macacão
-        Round 6: Coreia, Jogos, Dinheiro
-        Friends: Café, Nova York, Sofá
-        Shrek: Ogro, Pântano, Burro
-        Procurando Nemo: Peixe, Oceano, Pai
-        Velozes e Furiosos: Carros, Corrida, Família
+        Titanic: Navio, Romance, Mar
+        Harry Potter: Magia, Escola, Livro
+        Star Wars: Espaço, Guerra, Robôs
+        Toy Story: Brinquedo, Pixar, Amizade
+        Frozen: Princesa, Neve, Música
+        O Rei Leão: Animais, Música, Pai
+        Vingadores: Heróis, Ação, Equipe
+        Jurassic Park: Ilha, Aventura, Monstros
+        Matrix: Ação, Futuro, Tecnologia
+        Stranger Things: Monstro, Poderes, Crianças
+        La Casa de Papel: Assalto, Dinheiro, Equipe
+        Round 6: Dinheiro, Jogos, Sobrevivência
+        Friends: Amizade, Comédia, Café
+        Shrek: Princesa, Comédia, Animação
+        Procurando Nemo: Oceano, Pai, Animação
+        Velozes e Furiosos: Ação, Corrida, Família
         Os Simpsons: Amarelo, Desenho, Família
-        Chaves: Vila, Barril, Seu Madruga
-        Tropa de Elite: Polícia, BOPE, Caveira
-        Avatar: Azul, Planeta, Floresta
-        Barbie: Rosa, Boneca, Moda
+        Chaves: Comédia, Crianças, Clássico
+        Tropa de Elite: Ação, Polícia, Violência
+        Avatar: Planeta, Floresta, Aventura
+        Barbie: Boneca, Moda, Brinquedo
         Piratas do Caribe: Navio, Tesouro, Capitão
-        Divertida Mente: Emoções, Alegria, Tristeza
-        Game of Thrones: Dragões, Trono, Inverno
-        Wandinha: Gótica, Mãozinha, Tranças
+        Divertida Mente: Emoções, Animação, Cabeça
+        Game of Thrones: Dragões, Guerra, Medieval
+        Wandinha: Escola, Família, Mistério
       `),
       theme('personagens', 'Personagens', `
-        Mickey Mouse: Orelhas, Rato, Luvas
-        Bob Esponja: Abacaxi, Amarelo, Oceano
-        Super Mario: Encanador, Cogumelo, Bigode
-        Pikachu: Choque, Amarelo, Treinador
-        Sonic: Azul, Velocidade, Anéis
-        Batman: Morcego, Gotham, Capa
-        Homem-Aranha: Teia, Prédios, Máscara
-        Superman: Capa, Voar, Kryptonita
-        Mulher-Maravilha: Laço, Amazona, Braceletes
-        Hulk: Verde, Força, Raiva
-        Coringa: Vilão, Sorriso, Cartas
-        Darth Vader: Capacete, Respiração, Pai
-        Scooby-Doo: Mistério, Biscoito, Van
-        Pica-Pau: Pássaro, Risada, Árvore
-        Mônica: Dentuça, Gibi, Vermelho
-        Cebolinha: Planos, Gibi, Espetado
-        Pac-Man: Fantasmas, Labirinto, Bolinhas
-        Minions: Banana, Amarelo, Macacão
-        Buzz Lightyear: Espaço, Asas, Infinito
-        Goku: Esferas, Luta, Anime
-        Naruto: Ninja, Raposa, Anime
-        Branca de Neve: Maçã, Anões, Princesa
-        Cinderela: Sapato, Abóbora, Meia-noite
-        Pinóquio: Nariz, Mentira, Boneco
-        Peppa Pig: Rosa, Lama, Família
+        Mickey Mouse: Orelhas, Disney, Luvas
+        Bob Esponja: Amarelo, Mar, Desenho
+        Super Mario: Videogame, Bigode, Pulo
+        Pikachu: Amarelo, Anime, Fofo
+        Sonic: Azul, Videogame, Velocidade
+        Batman: Herói, Capa, Noite
+        Homem-Aranha: Herói, Máscara, Prédios
+        Superman: Herói, Capa, Voar
+        Mulher-Maravilha: Heroína, Força, Guerreira
+        Hulk: Verde, Força, Herói
+        Coringa: Vilão, Risada, Palhaço
+        Darth Vader: Vilão, Capacete, Preto
+        Scooby-Doo: Mistério, Medo, Desenho
+        Pica-Pau: Risada, Desenho, Travesso
+        Mônica: Gibi, Vermelho, Brava
+        Cebolinha: Gibi, Planos, Verde
+        Pac-Man: Videogame, Fantasmas, Amarelo
+        Minions: Amarelo, Óculos, Bagunça
+        Buzz Lightyear: Brinquedo, Espaço, Herói
+        Goku: Luta, Anime, Força
+        Naruto: Anime, Luta, Amizade
+        Branca de Neve: Princesa, Disney, Bruxa
+        Cinderela: Princesa, Disney, Baile
+        Pinóquio: Boneco, Disney, Fada
+        Peppa Pig: Rosa, Família, Desenho
       `),
       theme('famosos', 'Famosos', `
-        Anitta: Funk, Cantora, Rebolado
-        Xuxa: Loira, Baixinhos, Nave
-        Silvio Santos: Aviãozinho, Baú, Domingo
-        Ivete Sangalo: Axé, Bahia, Carnaval
-        Ayrton Senna: Capacete, Domingo, Bandeira
-        Gisele Bündchen: Modelo, Passarela, Gaúcha
-        Roberto Carlos: Rei, Emoções, Natal
-        Faustão: Domingão, Plateia, Bordão
-        Ana Maria Braga: Manhã, Receitas, Cozinha
+        Anitta: Cantora, Brasileira, Dança
+        Xuxa: Loira, Televisão, Crianças
+        Silvio Santos: Televisão, Domingo, Dinheiro
+        Ivete Sangalo: Cantora, Carnaval, Brasileira
+        Ayrton Senna: Velocidade, Brasileiro, Ídolo
+        Gisele Bündchen: Modelo, Loira, Brasileira
+        Roberto Carlos: Rei, Cantor, Brasileiro
+        Faustão: Televisão, Domingo, Apresentador
+        Ana Maria Braga: Televisão, Manhã, Apresentadora
         Taylor Swift: Cantora, Turnê, Pop
         Beyoncé: Diva, Pop, Dança
-        Michael Jackson: Moonwalk, Luva, Thriller
-        Elvis Presley: Topete, Rock, Rei
-        Albert Einstein: Relatividade, Gênio, Cabelo
-        Leonardo da Vinci: Mona Lisa, Inventor, Renascimento
-        Leonardo DiCaprio: Oscar, Ator, Galã
-        Shakira: Quadril, Colômbia, Waka Waka
-        Lady Gaga: Figurino, Pop, Excêntrica
-        Santos Dumont: Avião, Inventor, 14-Bis
-        Steve Jobs: Maçã, Gola alta, Garagem
-        Frida Kahlo: Sobrancelha, México, Flores
-        Charlie Chaplin: Bengala, Bigode, Cinema mudo
-        Tiradentes: Feriado, Inconfidência, Barba
-        Dom Pedro I: Independência, Grito, Imperador
-        Cleópatra: Egito, Rainha, Serpente
+        Michael Jackson: Dança, Pop, Rei
+        Elvis Presley: Rock, Rei, Cantor
+        Albert Einstein: Gênio, Ciência, Cabelo
+        Leonardo da Vinci: Arte, Inventor, Gênio
+        Leonardo DiCaprio: Ator, Cinema, Galã
+        Shakira: Cantora, Dança, Latina
+        Lady Gaga: Pop, Cantora, Figurino
+        Santos Dumont: Inventor, Brasileiro, Voar
+        Steve Jobs: Inventor, Tecnologia, Bilionário
+        Frida Kahlo: Pintora, Arte, Flores
+        Charlie Chaplin: Ator, Cinema, Comédia
+        Tiradentes: Feriado, História, Barba
+        Dom Pedro I: História, Feriado, Coroa
+        Cleópatra: Rainha, História, Coroa
       `),
       theme('marcas', 'Marcas', `
-        Coca-Cola: Refrigerante, Vermelho, Gelada
-        McDonald's: Lanche, Palhaço, Batata
+        Coca-Cola: Refrigerante, Vermelho, Bebida
+        McDonald's: Lanche, Batata, Amarelo
         Nike: Calçado, Corrida, Atleta
-        Adidas: Três listras, Alemanha, Agasalho
-        Apple: Maçã, Caro, Notebook
-        Samsung: Coreia, Eletrônicos, Smartphone
+        Adidas: Calçado, Atleta, Alemanha
+        Apple: Celular, Caro, Notebook
+        Samsung: Celular, Televisão, Eletrônicos
         Google: Pesquisa, Internet, Colorido
-        Netflix: Séries, Streaming, Sofá
-        Lego: Peças, Montar, Bloquinhos
-        Havaianas: Borracha, Verão, Dedo
-        O Boticário: Perfume, Presente, Cheiro
-        PlayStation: Videogame, Controle, Console
-        Guaraná Antarctica: Refrigerante, Amazônia, Verde
-        Nescau: Achocolatado, Leite, Caneca
-        Nubank: Roxo, Cartão, Aplicativo
+        Netflix: Séries, Filmes, Sofá
+        Lego: Brinquedo, Montar, Colorido
+        Havaianas: Verão, Praia, Brasil
+        O Boticário: Perfume, Presente, Vendedor
+        PlayStation: Videogame, Controle, Eletrônicos
+        Guaraná Antarctica: Refrigerante, Verde, Brasil
+        Nescau: Leite, Caneca, Bebida
+        Nubank: Banco, Cartão, Aplicativo
         iFood: Entrega, Fome, Aplicativo
         Uber: Corrida, Carro, Viagem
-        Disney: Castelo, Princesas, Orlando
-        Ferrari: Vermelho, Velocidade, Itália
-        Volkswagen: Fusca, Alemanha, Carro
+        Disney: Castelo, Princesas, Filmes
+        Ferrari: Carro, Vermelho, Velocidade
+        Volkswagen: Carro, Alemanha, Fábrica
         Amazon: Entrega, Caixa, Compras
         Mercado Livre: Amarelo, Frete, Vendedor
         WhatsApp: Mensagem, Verde, Grupo
-        Instagram: Fotos, Stories, Curtida
+        Instagram: Fotos, Curtida, Aplicativo
         YouTube: Vídeos, Vermelho, Canal
       `),
     ],
@@ -289,56 +290,56 @@ export const PACKS = [
     themes: [
       theme('esportes', 'Esportes', `
         Vôlei: Rede, Saque, Bloqueio
-        Basquete: Cesta, Arremesso, Garrafão
+        Basquete: Arremesso, Quadra, Time
         Tênis: Raquete, Saque, Quadra
-        Natação: Touca, Braçada, Raia
-        Surfe: Prancha, Onda, Parafina
-        Skate: Manobra, Rodinhas, Rampa
-        Boxe: Luvas, Ringue, Nocaute
+        Natação: Água, Raia, Olimpíadas
+        Surfe: Prancha, Água, Equilíbrio
+        Skate: Manobra, Rampa, Equilíbrio
+        Boxe: Luvas, Luta, Ringue
         Judô: Quimono, Faixa, Tatame
-        Capoeira: Berimbau, Roda, Gingado
+        Capoeira: Roda, Luta, Brasil
         Atletismo: Pista, Corrida, Salto
-        Ciclismo: Pedal, Capacete, Pelotão
-        Fórmula 1: Pit stop, Volante, Largada
-        Golfe: Taco, Buraco, Bandeira
+        Ciclismo: Capacete, Corrida, Estrada
+        Fórmula 1: Velocidade, Corrida, Capacete
+        Golfe: Taco, Grama, Bandeira
         Handebol: Quadra, Arremesso, Mãos
-        Ginástica: Acrobacia, Trave, Collant
-        Xadrez: Tabuleiro, Rei, Xeque
-        Esgrima: Espada, Máscara, Florete
-        Hipismo: Obstáculos, Sela, Montaria
-        Remo: Barco, Lago, Equipe
-        Beisebol: Taco, Luva, Rebatida
-        Futebol americano: Capacete, Touchdown, Ombreiras
+        Ginástica: Acrobacia, Olimpíadas, Equilíbrio
+        Xadrez: Estratégia, Rei, Mesa
+        Esgrima: Espada, Máscara, Olimpíadas
+        Hipismo: Obstáculos, Salto, Elegância
+        Remo: Água, Barco, Equipe
+        Beisebol: Taco, Luva, Americano
+        Futebol americano: Capacete, Estados Unidos, Time
         Karatê: Faixa, Golpe, Quimono
-        Escalada: Corda, Parede, Altura
+        Escalada: Corda, Altura, Capacete
         Pingue-pongue: Raquete, Mesa, Bolinha
-        Boliche: Pinos, Strike, Pista
+        Boliche: Pista, Bola, Diversão
       `),
       theme('futebol', 'Futebol', `
-        Pelé: Rei, Camisa 10, Milésimo
-        Neymar: Dribles, Camisa 10, Paris
-        Messi: Argentina, Baixinho, Canhoto
-        Cristiano Ronaldo: Portugal, Cabeceio, Comemoração
-        Ronaldinho: Sorriso, Dribles, Bruxo
-        Marta: Rainha, Seleção, Alagoas
+        Pelé: Rei, Camisa 10, Gols
+        Neymar: Dribles, Camisa 10, Seleção
+        Messi: Baixinho, Canhoto, Craque
+        Cristiano Ronaldo: Comemoração, Gols, Craque
+        Ronaldinho: Sorriso, Dribles, Craque
+        Marta: Rainha, Seleção, Craque
         Vini Jr.: Dança, Velocidade, Espanha
         Romário: Baixinho, Tetra, Artilheiro
-        Zico: Galinho, Camisa 10, Japão
+        Zico: Camisa 10, Ídolo, Craque
         Maracanã: Rio, Final, Templo
         Copa do Mundo: Seleção, Taça, Quatro anos
-        Pênalti: Cobrança, Goleiro, Apito
+        Pênalti: Cobrança, Goleiro, Falta
         Impedimento: Bandeirinha, Linha, Posição
         Escanteio: Canto, Cobrança, Cabeceio
         Cartão vermelho: Expulsão, Falta, Chuveiro
         Árbitro: Apito, Cartão, Bandeirinha
-        Flamengo: Mengão, Rubro-negro, Urubu
-        Corinthians: Timão, Fiel, Gavião
-        Palmeiras: Verdão, Porco, Alviverde
-        São Paulo: Tricolor, Morumbi, Soberano
-        Vasco: Cruzmaltino, Colina, Bacalhau
-        Grêmio: Tricolor, Gaúcho, Imortal
-        Real Madrid: Merengue, Branco, Espanha
-        Barcelona: Catalunha, Espanha, Azul-grená
+        Flamengo: Rio, Torcida, Vermelho
+        Corinthians: Torcida, Paulista, Alvinegro
+        Palmeiras: Paulista, Verde, Torcida
+        São Paulo: Tricolor, Paulista, Tradição
+        Vasco: Rio, Alvinegro, Torcida
+        Grêmio: Tricolor, Gaúcho, Torcida
+        Real Madrid: Espanha, Branco, Europa
+        Barcelona: Espanha, Europa, Azul
         Libertadores: Taça, América, Continental
       `),
     ],
